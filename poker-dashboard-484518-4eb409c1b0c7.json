@@ -1,0 +1,13 @@
+{
+  "type": "service_account",
+  "project_id": "poker-dashboard-484518",
+  "private_key_id": "4eb409c1b0c79472195eb8c85183e5ed6b70d650",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQCULk6aurt3Kc97\nnIQZ7rpLppmlxKuRKaxziYj21OWxnZH3z9A5zx4l0OENpG8fi3N5m1Dp3/UD+B65\nuvaR8ZvRIm6/KWSj91OptdqnF+CtF7EMq0qFCQinuRN69QQ13PTNXA8B9+VqgROj\nL9ZwwESNgRbNoqkVeXfyvxZBGCXiJNogAGfCjLXD8NzpLaggRq/5qm2D+HOfwQta\nY0vqBw97yjpqcTxh0f4dqeEu+Yre1HLkIrqXnkHEmbG9N4jT7yyKJ9IJnWzmS92A\nzC8MQwQ3sMbQDuD9zpOspaBJ/jNgebI9KZbtE71jCqO7rmPQeIJgPKt5mqyBFY4p\nmcdcoVFFAgMBAAECggEADA9LvuyJIszgkcUefDTRbSRBN3xO4UjUu+962engSskR\n7ur3HalVYQsDsfZKw/S3wHMrTel3+at5JrEIbb7N6WKlxEGUawLPSI3gHn7DPpsh\nwe/z5+lhDrNxmi10OwUBWHBQWV7pSTZ5mGulhnYjbifOKQy+uZxx7mvuXfxe4u1w\nos7GK072iuLqJvXJlK0ojNkh1I2LYItz9qfDrP8blqaJof2Dmplf/HjAgHbwYw5B\ng2iFPoZw4QhA0UQw5iKUqwGixSEdgZjDkmSYkNG+TNpPlRZuiSwfGoLHFkw10nP6\nFc93uChAIRanhV+KFi639iJuPm3Nle2K+RydY1kjCQKBgQDNYvRLS3H5OTNJw3ti\n+8X78Li7pmfLQx9o4VJYcb6142dyMGNK7jLhunhgAJ/f8+SyXRis8nW1pZUELqNN\nT6br1RRF46f5VWpaL3s6n+x7/IuFjfep7vAwS0moIY2H9FiXMlApbFZGOqMvBaZk\n3VvpGF4TmaqyPHCEI4qasz6m3QKBgQC4snfsg1ZOlvtLzozRrWaL4sEdMC9DvtPv\nMJGmK974Wr2Z+BOaKj+O6fSWLldSrUdLPaOulh1bWKS3d5zHpm67MIg5njT3zCSw\nB9aBnsd8T7TjBbwWmHp4hCyat7f5a6KPyp2loOYnDD2fNd3I/cCSLzFPAt1LW9Us\nEdBrW8lJiQKBgQCkuWKZKO9GJVw/IutI3glSISToS3Qfj7wXT+/NQ5zjIHmNGcXp\nCNYCOJ3m0VloMqIPc58gxm0lvKGhcw5CKUoFByZ1TzsfPCRKJJ6+zBjM8CWufchO\noHY/JYLzt8VdbtnGmfG051DijpDmW6+yYd8fOg3pxmsi/Fp5gE/f9zaeeQKBgQCy\nGM3RD7g6ohYBvFNHoLhAbVAf8CWzYqCEhcX8gVNJEl6/yFpGjzSof2qtIlRr0dDs\neayLHg+C1NBIZZuVXSRrdln1jVuwEnbSE0zBwrTDZyyauR3sf+2gpntIWZ2acjLY\nCt3HJ4am4oPNMSkCtcVqcP1QHgf7sbq1+xuJWoGXWQKBgG5uefBbQM4dLVERChpi\nqGGK5H0hGs1quLPgFMDTTZtOnvXZHjrVKtPLSy7Fj8E3Ps020/RzC8Tyxi1+ILTU\n8KTYAKXm1f3RjlzH1jhs5YfpBp4iVq44dYhwbMNqd4q++1XA6z6C3tFqu8sCoQYU\nJEhr1jDxQoVFmH4RreaMD5l0\n-----END PRIVATE KEY-----\n",
+  "client_email": "streamlit-poker-reader@poker-dashboard-484518.iam.gserviceaccount.com",
+  "client_id": "111703161907486820881",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/streamlit-poker-reader%40poker-dashboard-484518.iam.gserviceaccount.com",
+  "universe_domain": "googleapis.com"
+}
