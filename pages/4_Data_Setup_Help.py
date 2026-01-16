@@ -69,7 +69,10 @@ df, dq = data.load_dataset()
 if df.empty:
     st.warning("No data available yet. Add rows to your Google Sheet or use the template above.")
 else:
-    st.dataframe(df.head(10), use_container_width=True)
+    try:
+        st.dataframe(df.head(10), width="stretch")
+    except TypeError:
+        st.dataframe(df.head(10), use_container_width=True)
 
 st.subheader("Secrets format (example)")
 st.code(

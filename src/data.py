@@ -1,5 +1,6 @@
 from dataclasses import dataclass, field
 from typing import Dict, List, Tuple
+import traceback
 
 import pandas as pd
 import streamlit as st
@@ -97,7 +98,9 @@ def load_dataset() -> Tuple[pd.DataFrame, DataQuality]:
             df, headers = sheets.fetch_sheet()
             dq.source = "sheets"
         except Exception as exc:  # pylint: disable=broad-except
-            dq.issues.append(f"Sheets load failed: {exc}")
+            dq.issues.append(f"Sheets load failed: {type(exc).__name__}: {exc}")
+            # Helpful while debugging secrets/config issues.
+            dq.issues.append(traceback.format_exc())
 
     if df is None or df.empty:
         try:

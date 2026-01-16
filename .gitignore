@@ -10,6 +10,7 @@ venv/
 .env.local
 
 .streamlit/secrets.toml
+*.json
 
 .vscode/
 .idea/

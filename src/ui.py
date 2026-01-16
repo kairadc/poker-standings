@@ -19,7 +19,8 @@ def render_refresh_button() -> None:
     if st.button("Refresh data", help="Clears cached reads and reloads the sheet"):
         sheets.clear_cache()
         st.cache_data.clear()
-        st.experimental_rerun()
+        # st.rerun is the supported refresh call in newer Streamlit versions.
+        st.rerun()
 
 
 def render_global_filters(df: pd.DataFrame) -> Dict:
@@ -73,17 +74,30 @@ def render_standings_table(standings: pd.DataFrame) -> None:
     if standings is None or standings.empty:
         st.info("No standings to display yet.")
         return
-    st.dataframe(
-        standings,
-        use_container_width=True,
-        column_config={
-            "win_rate": st.column_config.ProgressColumn("Win rate", format="%.0f%%", min_value=0, max_value=1),
-            "total_net": st.column_config.NumberColumn(format="%.2f"),
-            "avg_net": st.column_config.NumberColumn(format="%.2f"),
-            "best_session_net": st.column_config.NumberColumn(format="%.2f"),
-            "worst_session_net": st.column_config.NumberColumn(format="%.2f"),
-        },
-    )
+    try:
+        st.dataframe(
+            standings,
+            width="stretch",
+            column_config={
+                "win_rate": st.column_config.ProgressColumn("Win rate", format="%.0f%%", min_value=0, max_value=1),
+                "total_net": st.column_config.NumberColumn(format="%.2f"),
+                "avg_net": st.column_config.NumberColumn(format="%.2f"),
+                "best_session_net": st.column_config.NumberColumn(format="%.2f"),
+                "worst_session_net": st.column_config.NumberColumn(format="%.2f"),
+            },
+        )
+    except TypeError:
+        st.dataframe(
+            standings,
+            use_container_width=True,
+            column_config={
+                "win_rate": st.column_config.ProgressColumn("Win rate", format="%.0f%%", min_value=0, max_value=1),
+                "total_net": st.column_config.NumberColumn(format="%.2f"),
+                "avg_net": st.column_config.NumberColumn(format="%.2f"),
+                "best_session_net": st.column_config.NumberColumn(format="%.2f"),
+                "worst_session_net": st.column_config.NumberColumn(format="%.2f"),
+            },
+        )
 
 
 def plot_cumulative_net(df: pd.DataFrame) -> None:
@@ -102,7 +116,10 @@ def plot_cumulative_net(df: pd.DataFrame) -> None:
         title="Cumulative net over time",
         labels={"date": "Date", "cumulative_net": "Cumulative net"},
     )
-    st.plotly_chart(fig, use_container_width=True)
+    try:
+        st.plotly_chart(fig, width="stretch")
+    except TypeError:
+        st.plotly_chart(fig, use_container_width=True)
 
 
 def plot_total_net_bar(standings: pd.DataFrame) -> None:
@@ -118,7 +135,10 @@ def plot_total_net_bar(standings: pd.DataFrame) -> None:
         color="total_net",
         color_continuous_scale="Blues",
     )
-    st.plotly_chart(fig, use_container_width=True)
+    try:
+        st.plotly_chart(fig, width="stretch")
+    except TypeError:
+        st.plotly_chart(fig, use_container_width=True)
 
 
 def plot_player_cumulative(player_df: pd.DataFrame, player: str) -> None:
@@ -136,7 +156,10 @@ def plot_player_cumulative(player_df: pd.DataFrame, player: str) -> None:
         markers=True,
         labels={"date": "Date", "cumulative_net": "Cumulative net"},
     )
-    st.plotly_chart(fig, use_container_width=True)
+    try:
+        st.plotly_chart(fig, width="stretch")
+    except TypeError:
+        st.plotly_chart(fig, use_container_width=True)
 
 
 def plot_player_sessions(player_df: pd.DataFrame, player: str) -> None:
@@ -153,7 +176,10 @@ def plot_player_sessions(player_df: pd.DataFrame, player: str) -> None:
         color="net",
         color_continuous_scale=["#d9534f", "#5cb85c"],
     )
-    st.plotly_chart(fig, use_container_width=True)
+    try:
+        st.plotly_chart(fig, width="stretch")
+    except TypeError:
+        st.plotly_chart(fig, use_container_width=True)
 
 
 def render_streaks(streaks: Dict) -> None:

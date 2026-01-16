@@ -1,9 +1,10 @@
 import pandas as pd
 
 
-def _win_rate(group: pd.DataFrame) -> float:
-    wins = (group["net"] > 0).sum()
-    losses = (group["net"] < 0).sum()
+def _win_rate_from_series(net_series: pd.Series) -> float:
+    """Compute win rate for a series of net values."""
+    wins = (net_series > 0).sum()
+    losses = (net_series < 0).sum()
     total = wins + losses
     return wins / total if total else 0.0
 
@@ -31,7 +32,8 @@ def calculate_standings(df: pd.DataFrame) -> pd.DataFrame:
         worst_session_net=("net", "min"),
     ).reset_index()
 
-    standings["win_rate"] = grouped.apply(_win_rate).values
+    win_rates = grouped["net"].apply(_win_rate_from_series).reset_index(name="win_rate")
+    standings = standings.merge(win_rates, on="player", how="left")
     standings = standings[columns].sort_values("total_net", ascending=False).reset_index(drop=True)
     return standings
 

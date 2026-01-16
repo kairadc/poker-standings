@@ -41,4 +41,7 @@ ui.plot_player_cumulative(player_df, selected_player)
 ui.plot_player_sessions(player_df, selected_player)
 
 st.subheader("Recent sessions")
-st.dataframe(player_profile["recent"], use_container_width=True)
+try:
+    st.dataframe(player_profile["recent"], width="stretch")
+except TypeError:
+    st.dataframe(player_profile["recent"], use_container_width=True)

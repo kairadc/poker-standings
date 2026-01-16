@@ -23,7 +23,10 @@ st.download_button(
     mime="text/csv",
 )
 
-st.dataframe(filtered_df.sort_values("date", ascending=False), use_container_width=True)
+try:
+    st.dataframe(filtered_df.sort_values("date", ascending=False), width="stretch")
+except TypeError:
+    st.dataframe(filtered_df.sort_values("date", ascending=False), use_container_width=True)
 
 st.subheader("Data quality")
 ui.render_data_quality(dq)
