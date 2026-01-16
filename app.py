@@ -4,9 +4,11 @@ from src import data, ui
 
 st.set_page_config(
     page_title="Friends Poker Standings",
-    page_icon="??",
+    page_icon="🃏",
     layout="wide",
 )
+
+ui.apply_centered_layout()
 
 st.title("Friends Poker Standings")
 st.caption("Track group results with Google Sheets as the single source of truth.")

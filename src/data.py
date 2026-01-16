@@ -1,6 +1,5 @@
 from dataclasses import dataclass, field
 from typing import Dict, List, Tuple
-import traceback
 
 import pandas as pd
 import streamlit as st
@@ -49,8 +48,19 @@ def normalize_dataframe(df: pd.DataFrame) -> Tuple[pd.DataFrame, DataQuality]:
     keep_cols = [col for col in REQUIRED_COLUMNS + OPTIONAL_COLUMNS if col in working.columns]
     working = working[keep_cols]
 
-    # Dates
-    working["date"] = pd.to_datetime(working["date"], errors="coerce")
+    # Dates (UK-friendly parsing)
+    date_col = "date"
+    raw_dates = working[date_col]
+    cleaned_dates = raw_dates
+    # If strings are present, clean NBSP and whitespace before parsing.
+    if cleaned_dates.dtype == object or isinstance(cleaned_dates.iloc[0], str):
+        cleaned_dates = (
+            cleaned_dates.astype(str)
+            .str.replace("\u00a0", " ", regex=False)
+            .str.strip()
+        )
+    parsed_dates = pd.to_datetime(cleaned_dates, errors="coerce", dayfirst=True)
+    working["date"] = parsed_dates
     invalid_dates = int(working["date"].isna().sum())
     if invalid_dates:
         dq.warnings["invalid_dates"] = invalid_dates
@@ -99,8 +109,6 @@ def load_dataset() -> Tuple[pd.DataFrame, DataQuality]:
             dq.source = "sheets"
         except Exception as exc:  # pylint: disable=broad-except
             dq.issues.append(f"Sheets load failed: {type(exc).__name__}: {exc}")
-            # Helpful while debugging secrets/config issues.
-            dq.issues.append(traceback.format_exc())
 
     if df is None or df.empty:
         try:

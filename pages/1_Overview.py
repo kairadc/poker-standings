@@ -2,6 +2,7 @@ import streamlit as st
 
 from src import data, metrics, ui
 
+ui.apply_centered_layout()
 
 st.title("Overview")
 

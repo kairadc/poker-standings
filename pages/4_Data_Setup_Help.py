@@ -1,7 +1,9 @@
 import pandas as pd
 import streamlit as st
 
-from src import config, data, sheets
+from src import config, data, sheets, ui
+
+ui.apply_centered_layout()
 
 st.title("Data Setup Help")
 st.write(
