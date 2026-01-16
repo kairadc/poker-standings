@@ -8,6 +8,12 @@ st.set_page_config(
     layout="wide",
 )
 
+# Redirect root to Overview so it's the landing experience
+try:
+    st.switch_page("pages/1_Overview.py")
+except Exception:
+    pass
+
 ui.apply_centered_layout()
 
 st.title("Friends Poker Standings")

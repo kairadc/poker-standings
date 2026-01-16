@@ -45,4 +45,4 @@ st.subheader("Recent sessions")
 try:
     st.dataframe(player_profile["recent"], width="stretch")
 except TypeError:
-    st.dataframe(player_profile["recent"], use_container_width=True)
+    st.dataframe(player_profile["recent"], width="stretch")

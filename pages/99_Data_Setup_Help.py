@@ -74,7 +74,7 @@ else:
     try:
         st.dataframe(df.head(10), width="stretch")
     except TypeError:
-        st.dataframe(df.head(10), use_container_width=True)
+        st.dataframe(df.head(10), width="stretch")
 
 st.subheader("Secrets format (example)")
 st.code(

@@ -66,6 +66,12 @@ Find your `spreadsheet_id` in the Sheet URL between `/d/` and `/edit`.
 ## Dev mode
 If no secrets are provided, the app shows "Running in demo mode" and loads `data/sessions_sample.csv`.
 
+## Settlement page
+- New **Session Settlement** page computes a minimal set of transfers for a single session.
+- Select a session to view per-player nets and who pays whom.
+- Requires columns: `session_id`, `player`, `net` (or `buy_in` and `cash_out`).
+- Copy the suggested transfers for easy sharing.
+
 ## Migration: game_type -> group
 - The canonical column is now `group` (friend group name).
 - Existing data with `game_type` will be read as `group` automatically.
