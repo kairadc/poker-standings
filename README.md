@@ -72,6 +72,9 @@ If no secrets are provided, the app shows "Running in demo mode" and loads `data
 - Requires columns: `session_id`, `player`, `net` (or `buy_in` and `cash_out`).
 - Copy the suggested transfers for easy sharing.
 
+## Optional pixel font
+To enable the arcade pixel font for headings, place `PressStart2P-Regular.ttf` into `assets/fonts/`. The CSS already includes a `@font-face` rule pointing to that path; once the file is present, headings will use the pixel font (class `pixel`).
+
 ## Migration: game_type -> group
 - The canonical column is now `group` (friend group name).
 - Existing data with `game_type` will be read as `group` automatically.

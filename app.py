@@ -17,6 +17,10 @@ except Exception:
 ui.apply_centered_layout()
 
 st.title("Friends Poker Standings")
+st.markdown(
+    '<div class="arcade-marquee"><span>🎮 SEASON MODE • 🏆 LEADERBOARD LIVE • 💰 ENTER RESULTS TO UPDATE •</span></div>',
+    unsafe_allow_html=True,
+)
 st.caption("Track group results with Google Sheets as the single source of truth.")
 
 # Load data once; downstream pages will reuse cached data.

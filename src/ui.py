@@ -27,6 +27,12 @@ def apply_centered_layout(max_width: int = 1200) -> None:
     st.markdown(
         f"""
         <style>
+        @font-face{{
+          font-family: "PressStart";
+          src: url("assets/fonts/PressStart2P-Regular.ttf") format("truetype");
+          font-weight: normal;
+          font-style: normal;
+        }}
         .arcade-wrap::before{{
           content:"";
           position: fixed;
@@ -66,6 +72,10 @@ def apply_centered_layout(max_width: int = 1200) -> None:
         }}
         h1, h2, h3, h4, h5, h6, p, span, label, .stMarkdown, [data-testid="stMarkdownContainer"] {{
             color: {c['text']} !important;
+        }}
+        .pixel, h1 {{
+            font-family: "PressStart", ui-sans-serif, system-ui;
+            letter-spacing: 0.6px;
         }}
         a {{
             color: {c['accent_pos']} !important;
@@ -144,6 +154,46 @@ def apply_centered_layout(max_width: int = 1200) -> None:
         .stSlider [data-baseweb="slider"] div[role="presentation"] > div {{
             background: {c['card_border']};
         }}
+        /* XP bars */
+        .xp-wrap {{
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            min-width: 140px;
+        }}
+        .xp-bar {{
+            position: relative;
+            flex: 1;
+            height: 10px;
+            border-radius: 999px;
+            background: rgba(255,255,255,0.10);
+            overflow: hidden;
+        }}
+        .xp-fill {{
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: var(--w, 0%);
+            background: linear-gradient(90deg, #22d3ee, #a855f7);
+            border-radius: 999px;
+            animation: xpGrow 0.5s ease-out forwards;
+        }}
+        .xp-label {{
+            font-size: 0.85rem;
+            color: {c['text']};
+            white-space: nowrap;
+            opacity: 0.9;
+        }}
+        @keyframes xpGrow {{
+            from {{ width: 0%; }}
+            to {{ width: var(--w, 0%); }}
+        }}
+        @media (prefers-reduced-motion: reduce) {{
+            .xp-fill {{
+                animation: none;
+            }}
+        }}
         [data-testid="block-container"] {{
             max-width: {max_width}px;
             margin: 0 auto;
@@ -203,6 +253,31 @@ def apply_centered_layout(max_width: int = 1200) -> None:
             padding: 18px;
             box-shadow: {c['shadow']};
             margin-bottom: 14px;
+            animation: neonPulse 3.5s ease-in-out infinite;
+        }}
+        @keyframes neonPulse {{
+          0% {{ box-shadow: 0 12px 40px rgba(0,0,0,0.45), 0 0 18px rgba(0,255,255,0.10); }}
+          50% {{ box-shadow: 0 12px 40px rgba(0,0,0,0.45), 0 0 28px rgba(255,0,255,0.16); }}
+          100% {{ box-shadow: 0 12px 40px rgba(0,0,0,0.45), 0 0 18px rgba(0,255,255,0.10); }}
+        }}
+        @keyframes marquee {{
+          0% {{ transform: translateX(0%); opacity: 0.9; }}
+          100% {{ transform: translateX(-40%); opacity: 0.9; }}
+        }}
+        .arcade-marquee{{
+          overflow:hidden;
+          white-space:nowrap;
+          border-radius: 999px;
+          padding: 8px 12px;
+          background: rgba(0,255,255,0.08);
+          border: 1px solid rgba(0,255,255,0.22);
+          font-weight: 800;
+          letter-spacing: 0.6px;
+        }}
+        .arcade-marquee span{{
+          display:inline-block;
+          padding-left: 100%;
+          animation: marquee 12s linear infinite;
         }}
         .arcade-btn button {{
             border-radius: 999px;
@@ -395,11 +470,32 @@ def render_metric_cards(items: List[Dict]) -> None:
     st.markdown(f"<div class='metric-grid'>{''.join(cards)}</div>", unsafe_allow_html=True)
 
 
+def render_xp_bar(value: float | int, max_value: float | int, label: str | None = None) -> str:
+    """
+    Return HTML for a neon XP bar.
+    value/max_value -> percentage; clamped 0-100.
+    """
+    try:
+        pct = (float(value) / float(max_value)) * 100 if max_value else 0
+    except (ZeroDivisionError, ValueError, TypeError):
+        pct = 0
+    pct = max(0.0, min(100.0, pct))
+    label_text = label if label is not None else f"{pct:.0f}%"
+    return (
+        f"<div class='xp-wrap'>"
+        f"<div class='xp-bar'><div class='xp-fill' style='--w:{pct:.2f}%;'></div></div>"
+        f"<span class='xp-label'>{label_text}</span>"
+        f"</div>"
+    )
+
+
 def render_standings_table(standings: pd.DataFrame) -> None:
     """Show standings in a stylized leaderboard table with rank badges."""
     if standings is None or standings.empty:
         st.info("No standings to display yet.")
         return
+
+    max_games = float(standings["games_played"].max()) if "games_played" in standings.columns else 0.0
 
     rows_html = []
     for idx, row in standings.reset_index(drop=True).iterrows():
@@ -415,13 +511,16 @@ def render_standings_table(standings: pd.DataFrame) -> None:
         net = row.get("total_net", 0)
         net_color = NEON["accent_pos"] if net > 0 else NEON["accent_neg"] if net < 0 else NEON["neutral"]
         win_rate = row.get("win_rate", 0) * 100
+        win_bar = render_xp_bar(row.get("win_rate", 0), 1, label=f"{win_rate:.0f}%")
+        games = int(row.get("games_played", 0))
+        games_bar = render_xp_bar(games, max_games if max_games else 1, label=f"{games} games")
         rows_html.append(
             f"<tr>"
             f"<td><span class='rank-badge {badge_class}'>{badge_text}</span></td>"
             f"<td><div class='player-cell'><span class='player-avatar'></span><strong>{row['player']}</strong></div></td>"
             f"<td style='color:{net_color}'>{net:.2f}</td>"
-            f"<td>{int(row.get('games_played',0))}</td>"
-            f"<td>{win_rate:.0f}%</td>"
+            f"<td>{games_bar}</td>"
+            f"<td>{win_bar}</td>"
             f"</tr>"
         )
 
