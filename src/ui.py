@@ -27,6 +27,31 @@ def apply_centered_layout(max_width: int = 1200) -> None:
     st.markdown(
         f"""
         <style>
+        .arcade-wrap::before{{
+          content:"";
+          position: fixed;
+          inset: 0;
+          pointer-events:none;
+          background: repeating-linear-gradient(
+            to bottom,
+            rgba(255,255,255,0.03) 0px,
+            rgba(255,255,255,0.03) 1px,
+            rgba(0,0,0,0) 3px,
+            rgba(0,0,0,0) 6px
+          );
+          mix-blend-mode: overlay;
+          opacity: 0.18;
+          z-index: 9999;
+        }}
+        @keyframes crtFlicker {{
+          0%, 100% {{ opacity: 1; }}
+          50% {{ opacity: 0.985; }}
+          52% {{ opacity: 0.97; }}
+          55% {{ opacity: 0.99; }}
+        }}
+        .stApp{{
+          animation: crtFlicker 6s infinite;
+        }}
         html, body, [data-testid="stAppViewContainer"] {{
             background: {c['body_bg']};
             background-image: {c['body_gradient']};
