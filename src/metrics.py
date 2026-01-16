@@ -1,5 +1,6 @@
 import pandas as pd
 
+from . import schema
 
 def _win_rate_from_series(net_series: pd.Series) -> float:
     """Compute win rate for a series of net values."""
@@ -142,3 +143,29 @@ def cumulative_net(df: pd.DataFrame) -> pd.DataFrame:
     temp = df.sort_values("date").copy()
     temp["cumulative_net"] = temp.groupby("player")["net"].cumsum()
     return temp[["date", "player", "cumulative_net", "net"]]
+
+
+def compute_biggest_swing_session(df: pd.DataFrame) -> dict:
+    """
+    Find the single player-session with largest absolute net.
+    Returns dict with player, net, date, group, session_id, reason(optional).
+    """
+    norm = schema.normalize_results_df(df)
+    required = {"player", "date", "net"}
+    if norm.empty or not required.issubset(norm.columns):
+        return {"player": None, "net": None, "date": None, "group": None, "session_id": None, "reason": "No data"}
+
+    norm["abs_net"] = norm["net"].abs()
+    # Tie-break: abs desc, date desc, player asc
+    norm = norm.sort_values(
+        by=["abs_net", "date", "player"], ascending=[False, False, True], ignore_index=True
+    )
+    top = norm.iloc[0]
+    return {
+        "player": top.get("player"),
+        "net": float(top.get("net")),
+        "date": top.get("date"),
+        "group": top.get("group") if "group" in norm.columns else None,
+        "session_id": top.get("session_id") if "session_id" in norm.columns else None,
+        "reason": None,
+    }

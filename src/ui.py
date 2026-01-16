@@ -433,19 +433,45 @@ def render_kpi_row(kpis: Dict) -> None:
     """Display top-level KPIs as cards."""
     items = [
         {"label": "Total sessions", "value": kpis.get("total_sessions", 0)},
-        {"label": "Total net", "value": f"{kpis.get('total_net', 0.0):.2f}"},
+        _build_biggest_swing_card(kpis.get("biggest_swing")),
         {
             "label": "Top winner",
             "value": kpis.get("top_winner") or "-",
             "delta": None if kpis.get("top_winner") is None else f"{kpis.get('top_winner_net', 0.0):.2f}",
         },
         {
-            "label": "Biggest loser",
+            "label": "Taking the fattest L",
             "value": kpis.get("biggest_loser") or "-",
             "delta": None if kpis.get("biggest_loser") is None else f"{kpis.get('biggest_loser_net', 0.0):.2f}",
         },
     ]
     render_metric_cards(items)
+
+
+def _build_biggest_swing_card(swing: Dict | None) -> Dict:
+    """Return a metric card dict for biggest swing session."""
+    if not swing or swing.get("net") is None:
+        return {"label": "Biggest swing session", "value": "-", "delta": "No session results yet"}
+
+    net = swing.get("net", 0.0)
+    sign = "+" if net > 0 else ""
+    value = f"{sign}£{net:.2f}"
+    date_str = (
+        swing.get("date").date().isoformat()
+        if swing.get("date") is not None and hasattr(swing.get("date"), "date")
+        else str(swing.get("date"))
+    )
+    parts = [swing.get("player") or "", date_str]
+    if swing.get("group"):
+        parts.append(f"Group: {swing.get('group')}")
+    if swing.get("session_id"):
+        parts.append(f"Session: {swing.get('session_id')}")
+    caption = " • ".join([p for p in parts if p])
+    return {
+        "label": "Biggest swing session",
+        "value": value,
+        "delta": caption or "largest single-session result by magnitude",
+    }
 
 
 def render_metric_cards(items: List[Dict]) -> None:

@@ -18,6 +18,9 @@ if filtered_df is None or filtered_df.empty:
     st.stop()
 
 kpis = metrics.summary_kpis(filtered_df)
+# Compute biggest swing session
+swing = metrics.compute_biggest_swing_session(filtered_df)
+kpis["biggest_swing"] = swing
 ui.render_kpi_row(kpis)
 
 st.subheader("Standings")
