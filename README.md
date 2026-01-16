@@ -1,6 +1,6 @@
 # Friends Poker Standings (Streamlit)
 
-Track poker results for your friend group. Data lives in Google Sheets so everyone can add rows from their phone. The app reads the sheet, calculates standings and streaks, and is ready to deploy on Streamlit Community Cloud for free.
+Track poker results for your friend group. Data lives in Google Sheets so everyone can add rows from their phone. The app reads the sheet, calculates standings and streaks, and is ready to deploy on Streamlit Community Cloud for free. Sessions can be tagged by **group** (e.g., Home Crew, Work Friends) to separate different circles.
 
 ## What the app does
 - Reads a Google Sheet (`sessions` worksheet) as the single source of truth.
@@ -28,7 +28,7 @@ Track poker results for your friend group. Data lives in Google Sheets so everyo
 
 ## Google Sheets setup
 1) Create a Google Sheet and add a worksheet named `sessions`.
-2) Add headers in row 1: `session_id,date,player,buy_in,cash_out,venue,game_type,season,notes`.
+2) Add headers in row 1: `session_id,date,player,buy_in,cash_out,venue,group,season,notes`. If you have older data with `game_type`, the app will treat `game_type` as `group`.
 3) Each row = one player in one session. `net` is computed by the app.
 
 ## Google Cloud service account setup
@@ -65,3 +65,13 @@ Find your `spreadsheet_id` in the Sheet URL between `/d/` and `/edit`.
 
 ## Dev mode
 If no secrets are provided, the app shows "Running in demo mode" and loads `data/sessions_sample.csv`.
+
+## Migration: game_type -> group
+- The canonical column is now `group` (friend group name).
+- Existing data with `game_type` will be read as `group` automatically.
+- If neither `group` nor `game_type` exists, the app will show a clear error.
+- To migrate CSVs on disk, run:
+  ```bash
+  python scripts/migrate_game_type_to_group.py your_file.csv
+  ```
+  A `.bak` copy is kept alongside the original.

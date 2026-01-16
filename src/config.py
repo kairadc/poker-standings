@@ -3,7 +3,7 @@ from pathlib import Path
 CACHE_TTL_SECONDS = 60
 
 REQUIRED_COLUMNS = ["session_id", "date", "player", "buy_in", "cash_out"]
-OPTIONAL_COLUMNS = ["venue", "game_type", "season", "notes"]
+OPTIONAL_COLUMNS = ["venue", "group", "season", "notes"]
 DERIVED_COLUMNS = ["net"]
 NUMERIC_COLUMNS = ["buy_in", "cash_out"]
 

@@ -45,8 +45,20 @@ def normalize_dataframe(df: pd.DataFrame) -> Tuple[pd.DataFrame, DataQuality]:
         dq.issues.append(f"Missing required columns: {', '.join(missing)}")
         return pd.DataFrame(columns=REQUIRED_COLUMNS + OPTIONAL_COLUMNS + ["net"]), dq
 
+    # Handle legacy game_type -> group
+    if "group" not in working.columns and "game_type" in working.columns:
+        working["group"] = working["game_type"]
     keep_cols = [col for col in REQUIRED_COLUMNS + OPTIONAL_COLUMNS if col in working.columns]
     working = working[keep_cols]
+
+    # If group still missing, raise a clear issue
+    if "group" not in working.columns:
+        dq.issues.append("Missing required column 'group' (legacy 'game_type' is also accepted).")
+        return pd.DataFrame(columns=REQUIRED_COLUMNS + OPTIONAL_COLUMNS + ["net"]), dq
+
+    # Normalize group values
+    working["group"] = working["group"].fillna("Unknown").astype(str).str.strip()
+    working.loc[working["group"] == "", "group"] = "Unknown"
 
     # Dates (UK-friendly parsing)
     date_col = "date"
@@ -152,7 +164,7 @@ def apply_filters(df: pd.DataFrame, filters: Dict[str, List]) -> pd.DataFrame:
     if players:
         filtered = filtered[filtered["player"].isin(players)]
 
-    for col in ["venue", "game_type", "season"]:
+    for col in ["venue", "group", "season"]:
         vals = filters.get(col) or []
         if vals and col in filtered.columns:
             filtered = filtered[filtered[col].isin(vals)]

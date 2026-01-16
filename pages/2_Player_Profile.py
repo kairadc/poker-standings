@@ -33,7 +33,6 @@ ui.render_metric_cards(
     ]
 )
 
-st.subheader("Streaks (win = net>0, loss = net<0, neutral resets)")
 ui.render_streaks(player_profile["streaks"])
 
 player_df = filtered_df[filtered_df["player"] == selected_player]

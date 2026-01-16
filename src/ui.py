@@ -6,16 +6,56 @@ from typing import Dict, List
 from . import sheets
 
 
+LIGHT_COLORS = {
+    "body_bg": "#ffffff",
+    "text": "#0b1b32",
+    "axis": "#52606d",
+    "card_bg": "#ffffff",
+    "card_border": "#e6e9ef",
+    "card_text": "#0b1b32",
+    "accent_pos": "#16a34a",
+    "accent_neg": "#d9534f",
+    "neutral": "#52606d",
+}
+
+
 def apply_centered_layout(max_width: int = 1100) -> None:
     """Constrain the main content width and center it for a cleaner card-like layout."""
+    c = LIGHT_COLORS
     st.markdown(
         f"""
         <style>
+        html, body, [data-testid="stAppViewContainer"] {{
+            background: {c['body_bg']};
+            color: {c['text']};
+        }}
+        [data-testid="stHeader"] {{
+            background: {c['body_bg']};
+        }}
+        [data-testid="stSidebar"] {{
+            background: {c['card_bg']};
+            color: {c['text']};
+        }}
+        h1, h2, h3, h4, h5, h6, p, span, label, .stMarkdown, [data-testid="stMarkdownContainer"] {{
+            color: {c['text']} !important;
+        }}
+        a {{
+            color: {c['accent_pos']} !important;
+        }}
+        [data-testid="stTable"], [data-testid="stDataFrame"] {{
+            color: {c['text']} !important;
+            background: {c['card_bg']};
+        }}
+        .stTextInput>div>div input, .stTextArea textarea, .stSelectbox div[data-baseweb="select"] *, .stMultiSelect div[data-baseweb="select"] * {{
+            color: {c['text']} !important;
+        }}
         [data-testid="block-container"] {{
             max-width: {max_width}px;
             margin: 0 auto;
             padding-top: 2rem;
             padding-bottom: 2rem;
+            background: {c['body_bg']};
+            color: {c['text']};
         }}
         [data-testid="stSidebar"] > div:first-child {{
             padding-top: 1rem;
@@ -27,21 +67,21 @@ def apply_centered_layout(max_width: int = 1100) -> None:
             margin: 12px 0 20px;
         }}
         .metric-card {{
-            background: white;
-            border: 1px solid #e6e9ef;
+            background: {c['card_bg']};
+            border: 1px solid {c['card_border']};
             border-radius: 12px;
             padding: 14px 16px;
             box-shadow: 0 6px 18px rgba(12, 18, 38, 0.06);
         }}
         .metric-label {{
-            color: #52606d;
+            color: {c['neutral']};
             font-size: 0.9rem;
             margin-bottom: 6px;
         }}
         .metric-value {{
             font-size: 1.6rem;
             font-weight: 700;
-            color: #0b1b32;
+            color: {c['card_text']};
             line-height: 1.2;
         }}
         .metric-delta {{
@@ -57,14 +97,14 @@ def apply_centered_layout(max_width: int = 1100) -> None:
 def _style_fig(fig):
     """Apply shared styling to all charts for a cohesive look."""
     fig.update_layout(
-        paper_bgcolor="#0f172a",
-        plot_bgcolor="#0f172a",
-        font=dict(color="#e5e7eb", family="serif"),
+        paper_bgcolor=LIGHT_COLORS["body_bg"],
+        plot_bgcolor=LIGHT_COLORS["body_bg"],
+        font=dict(color=LIGHT_COLORS["text"], family="serif"),
         legend_title_text="",
         margin=dict(t=40, b=10, l=10, r=10),
     )
-    fig.update_yaxes(showgrid=False, zeroline=False, color="#cbd5e1")
-    fig.update_xaxes(showgrid=False, zeroline=False, color="#cbd5e1")
+    fig.update_yaxes(showgrid=False, zeroline=False, color=LIGHT_COLORS["axis"])
+    fig.update_xaxes(showgrid=False, zeroline=False, color=LIGHT_COLORS["axis"])
     return fig
 
 
@@ -105,11 +145,12 @@ def render_global_filters(df: pd.DataFrame) -> Dict:
 
         filters: Dict[str, List] = {"date_range": date_range, "players": selected_players}
 
-        for col in ["venue", "game_type", "season"]:
+        for col in ["venue", "group", "season"]:
             if col in df.columns:
                 options = sorted(df[col].dropna().unique())
                 if options:
-                    filters[col] = st.multiselect(col.replace("_", " ").title(), options=options, key=f"filter_{col}")
+                    display_label = "Group" if col == "group" else col.replace("_", " ").title()
+                    filters[col] = st.multiselect(display_label, options=options, key=f"filter_{col}")
 
         return filters
 
@@ -135,14 +176,15 @@ def render_kpi_row(kpis: Dict) -> None:
 
 def render_metric_cards(items: List[Dict]) -> None:
     """Render metrics in a grid of cards."""
+    c = LIGHT_COLORS
     cards = []
     for item in items:
         label = item.get("label", "")
         value = item.get("value", "")
         delta = item.get("delta")
-        delta_color = "#0f9d58"
+        delta_color = c["accent_pos"]
         if isinstance(delta, str) and delta.strip().startswith("-"):
-            delta_color = "#d9534f"
+            delta_color = c["accent_neg"]
         delta_html = f"<div class='metric-delta' style='color:{delta_color}'>{delta}</div>" if delta else ""
         cards.append(
             f"<div class='metric-card'>"
@@ -220,7 +262,7 @@ def plot_total_net_bar(standings: pd.DataFrame) -> None:
         title="Total net",
         labels={"player": "", "total_net": ""},
         color="total_net",
-        color_continuous_scale=[(0, "#d9534f"), (0.5, "#f1f5f9"), (1, "#16a34a")],
+        color_continuous_scale=[(0, LIGHT_COLORS["accent_neg"]), (0.5, LIGHT_COLORS["neutral"]), (1, LIGHT_COLORS["accent_pos"])],
         color_continuous_midpoint=0,
     )
     fig = _style_fig(fig)
@@ -268,7 +310,7 @@ def plot_player_sessions(player_df: pd.DataFrame, player: str) -> None:
         title=f"{player} · per session",
         labels={"date": "", "net": ""},
         color="net",
-        color_continuous_scale=["#d9534f", "#16a34a"],
+        color_continuous_scale=[(0, LIGHT_COLORS["accent_neg"]), (1, LIGHT_COLORS["accent_pos"])],
     )
     fig = _style_fig(fig)
     fig.update_layout(legend=None)

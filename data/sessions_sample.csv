@@ -1,13 +1,13 @@
-session_id,date,player,buy_in,cash_out,venue,game_type,season,notes
-S-2024-01-05,2024-01-05,Alice,50,120,Home,cash,Winter,Hot start
-S-2024-01-05,2024-01-05,Bob,50,20,Home,cash,Winter,Cold cards
-S-2024-01-12,2024-01-12,Carla,60,110,Club,cash,Winter,
-S-2024-01-12,2024-01-12,Dan,60,40,Club,cash,Winter,
-S-2024-01-19,2024-01-19,Alice,40,35,Online,tournament,Winter,
-S-2024-01-19,2024-01-19,Bob,40,80,Online,tournament,Winter,
-S-2024-02-02,2024-02-02,Carla,50,30,Home,cash,Spring,
-S-2024-02-02,2024-02-02,Dan,50,100,Home,cash,Spring,
-S-2024-02-16,2024-02-16,Alice,30,70,Home,cash,Spring,
-S-2024-02-16,2024-02-16,Carla,30,20,Home,cash,Spring,
-S-2024-02-23,2024-02-23,Bob,25,60,Club,cash,Spring,
-S-2024-02-23,2024-02-23,Dan,25,15,Club,cash,Spring,
+session_id,date,player,buy_in,cash_out,venue,group,season,notes
+S-2024-01-05,2024-01-05,Alice,50,120,Home,Home Crew,Winter,Hot start
+S-2024-01-05,2024-01-05,Bob,50,20,Home,Home Crew,Winter,Cold cards
+S-2024-01-12,2024-01-12,Carla,60,110,Club,Club Night,Winter,
+S-2024-01-12,2024-01-12,Dan,60,40,Club,Club Night,Winter,
+S-2024-01-19,2024-01-19,Alice,40,35,Online,Online Crew,Winter,
+S-2024-01-19,2024-01-19,Bob,40,80,Online,Online Crew,Winter,
+S-2024-02-02,2024-02-02,Carla,50,30,Home,Home Crew,Spring,
+S-2024-02-02,2024-02-02,Dan,50,100,Home,Home Crew,Spring,
+S-2024-02-16,2024-02-16,Alice,30,70,Home,Home Crew,Spring,
+S-2024-02-16,2024-02-16,Carla,30,20,Home,Home Crew,Spring,
+S-2024-02-23,2024-02-23,Bob,25,60,Club,Club Night,Spring,
+S-2024-02-23,2024-02-23,Dan,25,15,Club,Club Night,Spring,

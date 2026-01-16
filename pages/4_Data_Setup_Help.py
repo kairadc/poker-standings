@@ -19,7 +19,7 @@ st.markdown(
     - `player` (text)
     - `buy_in` (number)
     - `cash_out` (number)
-    Optional: `venue`, `game_type` (`cash|tournament|other`), `season`, `notes`
+    Optional: `venue`, `group` (friend group name), `season`, `notes`
     """
 )
 
@@ -32,7 +32,7 @@ template_rows = [
         "buy_in": 50,
         "cash_out": 120,
         "venue": "Home",
-        "game_type": "cash",
+        "group": "Home Crew",
         "season": "Spring",
         "notes": "Example row",
     },
@@ -43,7 +43,7 @@ template_rows = [
         "buy_in": 50,
         "cash_out": 20,
         "venue": "Home",
-        "game_type": "cash",
+        "group": "Home Crew",
         "season": "Spring",
         "notes": "Example row",
     },
