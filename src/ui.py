@@ -435,7 +435,7 @@ def render_kpi_row(kpis: Dict) -> None:
         {"label": "Total sessions", "value": kpis.get("total_sessions", 0)},
         _build_biggest_swing_card(kpis.get("biggest_swing")),
         {
-            "label": "Top winner",
+            "label": "Most profitable player (aka the bastard that's took all your money)",
             "value": kpis.get("top_winner") or "-",
             "delta": None if kpis.get("top_winner") is None else f"{kpis.get('top_winner_net', 0.0):.2f}",
         },

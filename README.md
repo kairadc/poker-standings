@@ -75,6 +75,16 @@ If no secrets are provided, the app shows "Running in demo mode" and loads `data
 ## Optional pixel font
 To enable the arcade pixel font for headings, place `PressStart2P-Regular.ttf` into `assets/fonts/`. The CSS already includes a `@font-face` rule pointing to that path; once the file is present, headings will use the pixel font (class `pixel`).
 
+## Banned players (fun/social)
+- A tab named `banned_players` in the Google Sheet (case-sensitive) drives the 🚫 Banned page.
+- Required headers: `player_name` (required), `reason` (optional, defaults to "Failure to pay out"), `ban_type` (optional: Permanent|Temporary, defaults to Temporary).
+- The page is display-only and does not affect standings or calculations.
+- Example row:
+  ```
+  player_name,reason,ban_type
+  Alice,Did not settle last session,Temporary
+  ```
+
 ## Migration: game_type -> group
 - The canonical column is now `group` (friend group name).
 - Existing data with `game_type` will be read as `group` automatically.
