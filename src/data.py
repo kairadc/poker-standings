@@ -28,6 +28,22 @@ def clean_column_name(name: str) -> str:
     return str(name).strip().lower().replace(" ", "_")
 
 
+def _clean_numeric_series(series: pd.Series) -> pd.Series:
+    """
+    Coerce a column to numeric, handling currency symbols, commas, and parentheses
+    for negatives. Returns a float series with NaN for invalid entries.
+    """
+    if series.empty:
+        return pd.to_numeric(series, errors="coerce")
+    text = series.astype(str).str.replace("\u00a0", "", regex=False).str.strip()
+    # Convert accounting negatives like "(50)" to "-50"
+    text = text.str.replace(r"\(([^)]+)\)", r"-\1", regex=True)
+    # Remove currency symbols, commas, and any other non-numeric characters except dot/minus
+    text = text.str.replace(r"[^0-9.\-]", "", regex=True)
+    text = text.replace("", pd.NA)
+    return pd.to_numeric(text, errors="coerce")
+
+
 def normalize_dataframe(df: pd.DataFrame) -> Tuple[pd.DataFrame, DataQuality]:
     """Standardize columns, coerce types, drop bad rows, compute net."""
     dq = DataQuality()
@@ -80,7 +96,7 @@ def normalize_dataframe(df: pd.DataFrame) -> Tuple[pd.DataFrame, DataQuality]:
 
     # Numbers
     for col in NUMERIC_COLUMNS:
-        working[col] = pd.to_numeric(working[col], errors="coerce")
+        working[col] = _clean_numeric_series(working[col])
         invalid_numbers = int(working[col].isna().sum())
         if invalid_numbers:
             dq.warnings[f"invalid_{col}"] = invalid_numbers
@@ -91,8 +107,12 @@ def normalize_dataframe(df: pd.DataFrame) -> Tuple[pd.DataFrame, DataQuality]:
         dq.warnings["dropped_missing_required"] = missing_required_rows
     working = working.dropna(subset=REQUIRED_COLUMNS)
 
-    working["session_id"] = working["session_id"].astype(str)
-    working["player"] = working["player"].astype(str)
+    # Tidy string fields to avoid duplicate names due to whitespace
+    for col in ["session_id", "player", "venue", "group", "season", "notes"]:
+        if col in working.columns:
+            working[col] = working[col].astype(str).str.strip()
+    if "group" in working.columns:
+        working.loc[working["group"] == "", "group"] = "Unknown"
 
     # Derived net
     working["net"] = working["cash_out"] - working["buy_in"]

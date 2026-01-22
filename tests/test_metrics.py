@@ -49,3 +49,18 @@ def test_streak_calculation():
     assert streaks["longest_win"] == 2
     assert streaks["longest_loss"] == 1
     assert streaks["current"]["label"].startswith("Loss")
+
+
+def test_biggest_swing_with_currency_strings():
+    df = pd.DataFrame(
+        {
+            "session_id": ["a1", "b1"],
+            "date": ["2024-03-01", "2024-03-02"],
+            "player": ["Alice", "Bob"],
+            "buy_in": ["£50", "$200"],
+            "cash_out": ["£120", "$25"],
+        }
+    )
+    swing = metrics.compute_biggest_swing_session(df)
+    assert swing["player"] == "Bob"
+    assert round(swing["net"], 2) == -175.0

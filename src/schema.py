@@ -3,6 +3,17 @@ from typing import Tuple
 import pandas as pd
 
 
+def _clean_numeric_series(series: pd.Series) -> pd.Series:
+    """Coerce a series to numeric, handling currency symbols, commas, and accounting negatives."""
+    if series.empty:
+        return pd.to_numeric(series, errors="coerce")
+    text = series.astype(str).str.replace("\u00a0", "", regex=False).str.strip()
+    text = text.str.replace(r"\(([^)]+)\)", r"-\1", regex=True)
+    text = text.str.replace(r"[^0-9.\-]", "", regex=True)
+    text = text.replace("", pd.NA)
+    return pd.to_numeric(text, errors="coerce")
+
+
 def detect_results_schema(df: pd.DataFrame) -> str:
     """Detect which schema the results DataFrame follows."""
     cols = {c.lower() for c in df.columns}
@@ -29,11 +40,11 @@ def normalize_results_df(df: pd.DataFrame) -> pd.DataFrame:
 
     # Compute net if needed
     if schema == "buyin_cashout":
-        working["net"] = pd.to_numeric(working["cash_out"], errors="coerce") - pd.to_numeric(
-            working["buy_in"], errors="coerce"
-        )
+        working["buy_in"] = _clean_numeric_series(working["buy_in"])
+        working["cash_out"] = _clean_numeric_series(working["cash_out"])
+        working["net"] = working["cash_out"] - working["buy_in"]
     elif schema == "net_direct":
-        working["net"] = pd.to_numeric(working["net"], errors="coerce")
+        working["net"] = _clean_numeric_series(working["net"])
     else:
         return pd.DataFrame(columns=["player", "date", "net", "group", "session_id"])
 

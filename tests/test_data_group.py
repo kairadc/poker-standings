@@ -51,3 +51,27 @@ def test_normalize_errors_when_missing_group_and_game_type():
     norm, dq = data.normalize_dataframe(df)
     assert norm.empty
     assert any("group" in issue for issue in dq.issues)
+
+
+def test_normalize_handles_currency_and_whitespace():
+    df = pd.DataFrame(
+        {
+            "session_id": [" s1 "],
+            "date": ["2024-03-01"],
+            "player": ["  Alice  "],
+            "buy_in": ["£50.00"],
+            "cash_out": ["£120.50"],
+            "group": ["  Home Crew  "],
+            "venue": ["  Home  "],
+        }
+    )
+    norm, dq = data.normalize_dataframe(df)
+    assert not norm.empty
+    assert not dq.issues
+    row = norm.iloc[0]
+    assert row["session_id"] == "s1"
+    assert row["player"] == "Alice"
+    assert row["group"] == "Home Crew"
+    assert row["buy_in"] == 50.0
+    assert row["cash_out"] == 120.5
+    assert row["net"] == 70.5
